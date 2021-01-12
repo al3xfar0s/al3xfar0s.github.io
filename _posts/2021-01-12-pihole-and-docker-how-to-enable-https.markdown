@@ -10,9 +10,9 @@ tags: [Pi-hole, Docker, HTTPS, SSL, letsencrypt]
 
 Unfortunately, the [official documentation](https://github.com/pi-hole/docker-pi-hole) does not provide the steps needed to enable HTTPS on a Docker based Pi-hole instance and lots of users find this tricky. If you want to enable HTTPS on Pi-hole then this is your guide.
 
-First of all, I'm assuming that you have already setup Let's Enrypt and you have your SSL cert handy. I'm not going to go through that process as there are hundreds if not thousands guides out there.
+First of all, I'm assuming that you have already setup Let's Enrypt and you have your SSL cert handy. I'm not going to go through that process as there are hundreds, if not thousands guides out there.
 
-Now, first thing, create a directory where you will save your config and your pem files. I have created the directory in a NAS drive for example, where I have all the config files of my docker images.
+Now, first thing we have to do is to create a directory where you will save your config and your pem files. I have created the directory in a NAS drive for example, where I have all the config files of my docker images.
 
 {% highlight bash %}
 mkdir /srv/sda/Config/pihole
@@ -35,7 +35,7 @@ sudo chown www-data:users /srv/sda/Config/pi-hole/lighttpd/fullchain.pem
 sudo docker restart pihole
 {% endhighlight %}
 
-Let's create a cronjob and schedule it to run after your Let's Encrypt cronjob runs:
+The above has to run every time we generate a new certificate, let's create a cronjob and schedule it to run after your Let's Encrypt cronjob runs:
 
 {% highlight bash %}
 30 5 1 * * /home/dummyuser/upload-ssl-pi-hole.bash
@@ -70,9 +70,11 @@ $HTTP["host"] == "yoursite.xyz" {
 }
 {% endhighlight %}
 
-Now, the official docker compose file has 2 folders that must be mounted locally in order to preserve settings, /etc/pihole/ and /etc/dnsmasq.d/
+Now that we have all the above in place we can go through the docker compose file, the official docker compose file has 2 folders that must be mounted locally in order to preserve settings, /etc/pihole/ and /etc/dnsmasq.d/
 
-We need to mount 3 more files in order to make this work, combined.pem, fullchain.pem and external.conf. Below is the docker compose file I am using to make this work. Again, make sure the paths are up to date and the password is set to your password. If you want to use the random password feature then comment it out.
+We need to mount 3 more files in order to make this work, combined.pem, fullchain.pem and external.conf. 
+
+Below is an example of the docker compose file I am using to make this work. Again, make sure the paths are up to date and the password is set to your password. If you want to use the random password feature then comment it out.
 
 {% highlight bash %}
 version: "2"
@@ -103,3 +105,5 @@ services:
 {% endhighlight %}
 
 And this is it, you now have Pi-hole running in Docker on HTTPS!
+
+P.S. make sure you run once manually the upload-ssl-pi-hole.bash **before** you start your docker image, otherwise it will fail since the certs and the external.conf file won't be there.
