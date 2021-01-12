@@ -8,6 +8,8 @@ fig-caption: # Add figcaption (optional)
 tags: [Pi-hole, Docker, HTTPS, SSL, letsencrypt]
 ---
 
+Pi-hole is a Linux network-level advertisement and Internet tracker blocking application which acts as a DNS sinkhole and optionally a DHCP server, intended for use on a private network. Spinning it up in Docker is quite fast and easy.
+
 Unfortunately, the [official documentation](https://github.com/pi-hole/docker-pi-hole) does not provide the steps needed to enable HTTPS on a Docker based Pi-hole instance and lots of users find this tricky. If you want to enable HTTPS on Pi-hole then this is your guide.
 
 First of all, I'm assuming that you have already setup Let's Enrypt and you have your SSL cert handy. I'm not going to go through that process as there are hundreds, if not thousands guides out there.
