@@ -86,6 +86,8 @@ services:
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
+    # Create a cron job to run gravity update from Monday to Saturday, by default it runs only on Sunday. The last command is needed to prevent the container from terminating after the restart job finishes with exit code 0.
+    command: /bin/sh -c "echo '32 4   * * 1-6   root    PATH="$PATH:/usr/sbin:/usr/local/bin/" pihole updateGravity >/var/log/pihole_updateGravity.log || cat /var/log/pihole_updateGravity.log'>/etc/cron.d/pihole-extra && service cron restart && tail -f /dev/null"
     ports:
       - "53:53/tcp"
       - "53:53/udp"
